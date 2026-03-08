@@ -19,8 +19,8 @@ class MergeSort(tracer: Tracer) {
 
       merge(sortedLeft, sortedRight)
     }
-    
-    tracer.add(TracePoints.END, s"result=${res.take(3)}...")
+
+    tracer.add(TracePoints.END, s"result=${res.take(3)}")
     res
   }
 

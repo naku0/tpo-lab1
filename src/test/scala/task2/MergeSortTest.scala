@@ -116,21 +116,18 @@ class MergeSortTest {
       "BASE_CASE[single]",
       "END[result=List(2)]",
       "MERGE_STEP[L:1]",
-      "MERGE_STEP[L:2]",
       "END[result=List(1, 2)]",
       "MERGE_STEP[R:1]",
-      "MERGE_STEP[L:3]",
-      "MERGE_STEP[L:2]",
+      "MERGE_STEP[R:2]",
       "END[result=List(1, 2, 3)]"
     )
 
     var lastIndex = -1
     expectedSequence.foreach { point =>
-      val index = trace.indexWhere(_.startsWith(point.split('[').head))
-      if (index >= 0) {
-        assertTrue(index > lastIndex, s"Точка $point должна идти после предыдущей")
-        lastIndex = index
-      }
+      val pointType = point.split('[').head
+      val index = trace.indexWhere(_.startsWith(pointType), lastIndex + 1)
+      assertTrue(index > lastIndex, s"Точка $point должна идти после предыдущей (найдена на позиции $index, ожидалось после $lastIndex)")
+      lastIndex = index
     }
   }
 
@@ -146,14 +143,41 @@ class MergeSortTest {
     println("\nТрассировка для [4,2,3,1]: ")
     trace.zipWithIndex.foreach { case (t, i) => println(s"$i: $t") }
 
-    val mergeSteps = trace.count(_.startsWith("MERGE_STEP"))
-    assertEquals(3, mergeSteps)
+    val expectedSequence = List(
+      "START[size=4]",
+      "DIVIDE[2|2]",
+      "START[size=2]",
+      "DIVIDE[1|1]",
+      "START[size=1]",
+      "BASE_CASE[single]",
+      "END[result=List(4)]",
+      "START[size=1]",
+      "BASE_CASE[single]",
+      "END[result=List(2)]",
+      "MERGE_STEP[R:2]",
+      "END[result=List(2, 4)]",
+      "START[size=2]",
+      "DIVIDE[1|1]",
+      "START[size=1]",
+      "BASE_CASE[single]",
+      "END[result=List(3)]",
+      "START[size=1]",
+      "BASE_CASE[single]",
+      "END[result=List(1)]",
+      "MERGE_STEP[R:1]",
+      "END[result=List(1, 3)]",
+      "MERGE_STEP[R:1]",
+      "MERGE_STEP[L:2]",
+      "MERGE_STEP[R:3]",
+      "END[result=List(1, 2, 3, 4)]"
+    )
 
-    val takeOrder = trace.filter(_.startsWith("MERGE_STEP"))
-      .map(_.replace("MERGE_STEP[", "").replace("]", ""))
-
-    println(s"Порядок взятия элементов: $takeOrder")
-
-    assertEquals(4, takeOrder.flatMap(_.split(":")).count(_.forall(_.isDigit)))
+    var lastIndex = -1
+    expectedSequence.foreach { point =>
+      val pointType = point.split('[').head
+      val index = trace.indexWhere(_.startsWith(pointType), lastIndex + 1)
+      assertTrue(index > lastIndex, s"Точка $point должна идти после предыдущей (найдена на позиции $index, ожидалось после $lastIndex)")
+      lastIndex = index
+    }
   }
 }

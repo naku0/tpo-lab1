@@ -7,8 +7,8 @@ lazy val root = (project in file("."))
     name := "tpo",
 
     libraryDependencies ++= Seq(
-        "org.junit.jupiter" % "junit-jupiter-api" % "5.10.2" % Test,
-        "org.junit.jupiter" % "junit-jupiter-engine" % "5.10.2" % Test,
+        "org.junit.jupiter" % "junit-jupiter-api" % "6.0.3" % Test,
+        "org.junit.jupiter" % "junit-jupiter-engine" % "6.0.3" % Test,
         "com.github.sbt.junit" % "jupiter-interface" % "0.17.0" % Test
     )
   )
