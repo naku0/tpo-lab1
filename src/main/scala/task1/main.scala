@@ -1,11 +1,6 @@
 package task1
 
-@main
-def main(): Unit = {
-  (1 to 5).foreach(println)
-
-  for (i <- 1 to 5) {
-    println(s"i = $i")
-  }
+@main def main(): Unit = {
+  val x = 0.5
+  println(ArctgSeries.arctg(x))
 }
-
