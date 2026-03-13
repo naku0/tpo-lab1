@@ -11,7 +11,7 @@ class Human(val name: String,
             val vision: Int,
             var hit: Int = 0,
             var position: Position,
-            var state: State,
+            var state: State = State.HEALTHY,
             var moves: Int=0) extends ICanView with Hitable with Viewable (position) {
   
   override def getHit: Unit = {

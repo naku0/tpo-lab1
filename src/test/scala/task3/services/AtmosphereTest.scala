@@ -6,19 +6,19 @@ import org.junit.jupiter.api.Test
 class AtmosphereTest {
 
 	@Test
-	def colorUsesRedWhenRarefactionIsHigh(): Unit = {
+	def colorRedWhenRarefactionIsHigh(): Unit = {
 		val atmosphere = Atmosphere(_rarefaction = 0.81f, temp = 20.0f)
 		assertEquals(Atmosphere.RED, atmosphere.color())
 	}
 
 	@Test
-	def colorUsesGreenWhenRarefactionIsLowAndTempIsNormal(): Unit = {
+	def colorGreenWhenRarefactionIsLow(): Unit = {
 		val atmosphere = Atmosphere(_rarefaction = 0.1f, temp = 25.0f)
 		assertEquals(Atmosphere.GREEN, atmosphere.color())
 	}
 
 	@Test
-	def colorPrioritizesRedWhenTemperatureIsHigh(): Unit = {
+	def colorRedWhenTemperatureIsHigh(): Unit = {
 		val atmosphere = Atmosphere(_rarefaction = 0.1f, temp = 60.0f)
 		assertEquals(Atmosphere.RED, atmosphere.color())
 	}

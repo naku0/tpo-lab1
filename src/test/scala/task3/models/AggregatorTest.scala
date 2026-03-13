@@ -22,7 +22,19 @@ class AggregatorTest {
   }
 
   @Test
-  def lookupUsesReferenceEqualityForPosition(): Unit = {
+  def addHumanWithIncorrectPositionThrows(): Unit = {
+    val position1 = new Position(1, 2)
+    val position2 = new Position(1, 2)
+    val human1 = new Human("Arthur", 10, position = position1)
+    val human2 = new Human("Ford", 8, position = position2)
+
+    Aggregator.add(human1)
+
+    assertThrows(classOf[IllegalArgumentException], () => Aggregator.add(human2))
+  }
+
+  @Test
+  def lookupUsesEqualityForPosition(): Unit = {
     val storedPos = new Position(10, 20)
     val lookupPos = new Position(10, 20)
     val human = new Human("Ford", 8, position = storedPos, state = State.HEALTHY)
@@ -30,7 +42,7 @@ class AggregatorTest {
     Aggregator.add(human)
 
     assertTrue(Aggregator.get(storedPos).isDefined)
-    assertTrue(Aggregator.get(lookupPos).isEmpty)
+    assertTrue(Aggregator.get(lookupPos).isDefined)
   }
 }
 

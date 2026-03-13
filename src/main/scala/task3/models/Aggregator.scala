@@ -8,6 +8,7 @@ object Aggregator {
   }
   
   def add(human: Human): Unit = {
+    if (get(human.position).isDefined) throw new IllegalArgumentException("В данной позиции уже есть человек.")
     list = (human::list)
   }
 }

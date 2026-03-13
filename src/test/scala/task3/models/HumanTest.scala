@@ -24,7 +24,7 @@ class HumanTest {
 	}
 
 	@Test
-	def visibilityThresholdUsesStrictGreaterThanRule(): Unit = {
+	def visibilityStrictRules(): Unit = {
 		val observer = new Human("Arthur", 5, position = new Position(0, 0), state = State.HEALTHY)
 		val target = CelestialBody("Moon", new Position(1000, 0))
 
@@ -44,7 +44,7 @@ class HumanTest {
 	}
 
 	@Test
-	def tiredMoveUsesCurrentImplementationFormula(): Unit = {
+	def tiredMove(): Unit = {
 		val human = new Human("Arthur", 10, position = new Position(0, 0), state = State.TIRED)
 
 		human.move(new Position(10, 10), Atmosphere())

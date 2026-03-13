@@ -6,4 +6,15 @@ class Position(var x: Double, var y: Double) {
     val dy = y - position.y
     Math.sqrt(dx * dx + dy * dy)
   }
+
+  override def equals(obj: Any): Boolean = {
+    obj match {
+      case p: Position => this.x == p.x && this.y == p.y
+      case _ => false
+    }
+  }
+
+  override def hashCode(): Int = {
+    (x, y).##
+  }
 }
