@@ -15,3 +15,7 @@ lazy val root = (project in file("."))
 
 Test / testOptions += Tests.Argument(TestFrameworks.JUnit, "-v")
 Test / fork := true
+
+jacocoExcludes := Seq(
+  "task2.tracer.*"
+)

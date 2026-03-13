@@ -2,7 +2,7 @@ package task1
 
 import scala.annotation.tailrec
 
-object ArctgSeries {
+class ArctgSeries {
 
   def arctg(x: Double, eps: Double = 1e-10): Double = {
     require(Math.abs(x) <= 1.0, "Ряд сходится только при |x| <= 1")

@@ -39,13 +39,3 @@ class MergeSort(tracer: Tracer) {
     }
   }
 }
-
-object MergeSort {
-  def create(): MergeSort = {
-    new MergeSort(new task2.tracer.Tracer())
-  }
-
-  def sort(list: List[Int]): List[Int] = {
-    create().sort(list)
-  }
-}
