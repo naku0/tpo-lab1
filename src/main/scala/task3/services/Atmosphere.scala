@@ -2,9 +2,10 @@ package task3.services
 
 import scala.util.Random
 
-class Atmosphere(private var _rarefaction: Float = 0.5) {
+class Atmosphere(private var _rarefaction: Float = 0.5,
+                 var temp: Float = 25.0) {
   def color(): (Int, Int, Int) = {
-    if (_rarefaction > 0.8) {
+    if (_rarefaction > 0.8 | temp > 50.0) {
       Atmosphere.RED
     } else if (_rarefaction < 0.2) {
       Atmosphere.GREEN
@@ -16,8 +17,9 @@ class Atmosphere(private var _rarefaction: Float = 0.5) {
   def change(): Unit = {
     val old = _rarefaction
     _rarefaction = Random().nextFloat()
+    temp = Random().nextFloat() * 100
     
-    println(s"Атмосфера изменилась с $old на $_rarefaction")
+    println(s"Атмосфера изменилась с $old на $_rarefaction; Температура составляет: $temp" )
   }
   
   def rarefaction(): Float = {

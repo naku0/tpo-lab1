@@ -1,7 +1,7 @@
 package task2
 
 import org.junit.jupiter.api.Assertions.{assertEquals, assertTrue}
-import org.junit.jupiter.api.{BeforeEach, Test}
+import org.junit.jupiter.api.{AfterEach, BeforeAll, BeforeEach, Test}
 import task2.mergeSort.MergeSort
 import task2.tracer.Tracer
 
@@ -302,7 +302,7 @@ class MergeSortTest {
   def testTracePointParameters(): Unit = {
     val input = List(10, 5, 7, 3)
     val result = mergeSort.sort(input)
-
+    
     assertEquals(List(3, 5, 7, 10), result)
 
     val trace = tracer.getTrace

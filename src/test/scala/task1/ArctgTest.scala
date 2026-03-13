@@ -1,12 +1,11 @@
 package task1
 
-import org.junit.jupiter.api.{BeforeEach, Test}
+import org.junit.jupiter.api.{BeforeAll, BeforeEach, Test}
 import org.junit.jupiter.api.Assertions.*
 
 class ArctgTest {
 
   var arctgSeries: ArctgSeries = _
-
   val EPSILON = 1e-10
   val TEST_EPSILON = 1e-8
   
