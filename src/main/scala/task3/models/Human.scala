@@ -24,7 +24,7 @@ class Human(val name: String,
   }
 
   override def canView(a: Atmosphere, v: Viewable): Boolean = {
-    vision * a.rarefaction() * (position.getDistance(v.pos) / 1000) > 4
+    vision * a.rarefaction() / (position.getDistance(v.pos) / 1000) > 4
   }
 
   def move(newPos: Position, a: Atmosphere): Unit = {
@@ -44,6 +44,7 @@ class Human(val name: String,
       state = TIRED
     }
     
+    @tailrec
     def func():Unit = {
       Aggregator.get(position) match {
         case Some(h) => {
@@ -58,7 +59,7 @@ class Human(val name: String,
     func()
   }
 
-  def setState(a: Atmosphere) = a.color() match {
+  def setState(a: Atmosphere): Unit = a.color() match {
     case Atmosphere.RED | Atmosphere.GREEN => state = BLIND
     case _ =>
   }

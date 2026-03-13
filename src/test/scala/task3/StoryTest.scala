@@ -1,10 +1,13 @@
 package task3
 
+import java.time.LocalTime
 import org.junit.jupiter.api.{BeforeEach, Test}
 import org.junit.jupiter.api.Assertions.*
 import task3.controllers.DayCycle
-import task3.models.{CelestialBody, Human}
-import task3.services.Atmosphere
+import task3.enums.State
+import task3.models.{Aggregator, CelestialBody, Human, Position}
+import task3.services.{Atmosphere, Clock}
+import scala.util.Random
 
 class StoryTest {
 
@@ -15,44 +18,49 @@ class StoryTest {
 
   @BeforeEach
   def setup(): Unit = {
-    arthur = Human("Arthur", 10)
-    oldman = Human("old", 5)
+    Aggregator.list = Nil
 
-    moon = CelestialBody("Moon", 5_000)
+    arthur = new Human("Arthur", 10, position = new Position(0, 0), state = State.HEALTHY)
+    oldman = new Human("Old", 5, position = new Position(300, 0), state = State.HEALTHY)
 
-    atmosphere = Atmosphere()
+    moon = CelestialBody("Moon", new Position(1200, 0))
+
+    atmosphere = Atmosphere(_rarefaction = 0.5f, temp = 25.0f)
   }
 
   @Test
-  def storyTest(): Unit = {
+  def dayCycleEventuallyStops(): Unit = {
+    val day = DayCycle(
+      clock = Clock(utc = 0, _time = LocalTime.of(0, 0, 0), random = Random(1)),
+      atmosphere = Atmosphere(0.5f)
+    )
 
-    val day = DayCycle()
-    while (day.run()) {
-      if (moon.isVisible(day.atmosphere, arthur.vision)) {
-        println(s"${arthur.name} видит ${moon.name}.")
-      } else if (!arthur.isVisible(day.atmosphere, oldman.vision)) {
-        println(s"${arthur.name} сталкивается со стариком ${oldman.name}.")
-        arthur.clash(oldman)
-      }
+    var steps = 0
+    while (steps < 30 && day.run()) {
+      steps += 1
     }
+
+    assertTrue(steps > 0)
     assertTrue(day.clock.time()._1 >= 23, "День должен закончиться после цикла.")
   }
 
   @Test
-  def atmosphereDarknessTest(): Unit = {
-    atmosphere.darkness()
-    assertFalse(moon.isVisible(atmosphere, arthur.vision), s"${arthur.name} не должен видеть ${moon.name} в темноте.")
-    assertFalse(arthur.isVisible(atmosphere, oldman.vision), s"${oldman.name} не должен видеть ${arthur.name} в темноте.")
+  def visibilityAndCollisionBranchesCanBothHappen(): Unit = {
+    assertTrue(arthur.canView(atmosphere, moon))
 
-    assertEquals(atmosphere.color(), Atmosphere.GREEN, "Цвет атмосферы должен быть зеленым в темноте.")
+    val nearMoon = CelestialBody("NearMoon", new Position(500, 0))
+    assertTrue(arthur.canView(atmosphere, nearMoon))
+
+    val distantMoon = CelestialBody("DMoon", new Position(5000, 0))
+    assertFalse(arthur.canView(atmosphere, distantMoon))
+
+    arthur.clash(oldman)
+    assertEquals(1, oldman.hit)
   }
 
   @Test
-  def atmosphereLightTest(): Unit = {
-    atmosphere.light()
-    assertTrue(moon.isVisible(atmosphere, arthur.vision), s"${arthur.name} должен видеть ${moon.name} при ярком свете.")
-    assertTrue(arthur.isVisible(atmosphere, oldman.vision), s"${oldman.name} должен видеть ${arthur.name} при ярком свете.")
-
-    assertEquals(atmosphere.color(), Atmosphere.RED, "Цвет атмосферы должен быть красным при ярком свете.")
+  def atmosphereCanAffectHumanState(): Unit = {
+    arthur.setState(Atmosphere(_rarefaction = 0.1f, temp = 20.0f))
+    assertEquals(State.BLIND, arthur.state)
   }
 }
