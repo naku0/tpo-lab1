@@ -2,6 +2,7 @@ package task3.services
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import task3.enums.WeatherType
 
 class AtmosphereTest {
 
@@ -24,7 +25,7 @@ class AtmosphereTest {
 	}
 
 	@Test
-	def darknessAndLightSetExpectedRarefaction(): Unit = {
+	def darknessAndLightSetRarefaction(): Unit = {
 		val atmosphere = Atmosphere(0.5f)
 
 		atmosphere.darkness()
@@ -37,15 +38,32 @@ class AtmosphereTest {
 	}
 
 	@Test
-	def changeKeepsValuesInExpectedRanges(): Unit = {
-		val atmosphere = Atmosphere(0.5f)
+	def visibilityFactorDependsOnWeather(): Unit = {
+		val atmosphere = Atmosphere(0.5f, 25.0f, WeatherType.SUNNY)
 
-		atmosphere.change()
+		assertEquals(0.5f, atmosphere.visibilityFactor())
+		atmosphere.setWeather(WeatherType.RAINY)
+		assertEquals(0.2f, atmosphere.visibilityFactor())
+		atmosphere.setWeather(WeatherType.SNOWY)
+		assertEquals(0.35f, atmosphere.visibilityFactor())
+	}
 
-		assertTrue(atmosphere.rarefaction() >= 0.0f)
-		assertTrue(atmosphere.rarefaction() < 1.0f)
-		assertTrue(atmosphere.temp >= 0.0f)
-		assertTrue(atmosphere.temp < 100.0f)
+	@Test
+	def constructorWithInvalidData(): Unit = {
+		assertThrows(classOf[IllegalArgumentException], () => Atmosphere(-0.1f, 20.0f, WeatherType.SUNNY))
+		assertThrows(classOf[IllegalArgumentException], () => Atmosphere(0.3f, 101.0f, WeatherType.SUNNY))
+		assertThrows(classOf[IllegalArgumentException], () => Atmosphere(0.3f, 20.0f, null))
+	}
+
+	@Test
+	def setInvalidData(): Unit = {
+		val atmosphere = Atmosphere(0.5f, 25.0f, WeatherType.SUNNY)
+
+		assertThrows(classOf[IllegalArgumentException], () => atmosphere.setRarefaction(1.1f))
+		assertThrows(classOf[IllegalArgumentException], () => atmosphere.setRarefaction(Float.NaN))
+		assertThrows(classOf[IllegalArgumentException], () => atmosphere.setTemperature(-150.0f))
+		assertThrows(classOf[IllegalArgumentException], () => atmosphere.setTemperature(Float.NaN))
+		assertThrows(classOf[IllegalArgumentException], () => atmosphere.setWeather(null))
 	}
 
 }

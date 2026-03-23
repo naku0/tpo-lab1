@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import task3.enums.State
+import task3.enums.WeatherType
 import task3.services.Atmosphere
 
 class HumanTest {
@@ -39,7 +40,7 @@ class HumanTest {
 
 		human.move(newPos, Atmosphere())
 
-		assertSame(newPos, human.position)
+		assertEquals(newPos, human.position)
 		assertEquals(1, human.moves)
 	}
 
@@ -71,7 +72,7 @@ class HumanTest {
 	}
 
 	@Test
-	def stateBecomesTiredAfterMoreThanFiveMoves(): Unit = {
+	def stateBecomesTiredAfterFiveMoves(): Unit = {
 		val human = new Human("Arthur", 10, position = new Position(0, 0), state = State.HEALTHY)
 
 		(1 to 6).foreach(i => human.move(new Position(i, i), Atmosphere()))
@@ -90,6 +91,37 @@ class HumanTest {
 		human.state = State.HEALTHY
 		human.setState(Atmosphere(_rarefaction = 0.5f, temp = 20.0f))
 		assertEquals(State.HEALTHY, human.state)
+	}
+
+	@Test
+	def moveClashesAndShiftsWhenPositionOccupied(): Unit = {
+		val mover = new Human("Arthur", 10, position = new Position(0, 0), state = State.HEALTHY)
+		val blocker = new Human("Ford", 8, position = new Position(5, 2), state = State.HEALTHY)
+
+		Aggregator.add(blocker)
+		mover.move(new Position(5, 2), Atmosphere())
+
+		assertEquals(1, blocker.hit)
+		assertEquals(4.0, mover.position.x)
+		assertEquals(2.0, mover.position.y)
+	}
+
+	@Test
+	def rainyWeatherReduceVisibility(): Unit = {
+		val observer = new Human("Arthur", 10, position = new Position(0, 0), state = State.HEALTHY)
+		val target = CelestialBody("Moon", new Position(1000, 0))
+
+		assertTrue(observer.canView(Atmosphere(0.5f, 20.0f, WeatherType.SUNNY), target))
+		assertFalse(observer.canView(Atmosphere(0.5f, 20.0f, WeatherType.RAINY), target))
+	}
+
+	@Test
+	def nullAtmosphereThrows(): Unit = {
+		val observer = new Human("Arthur", 10, position = new Position(0, 0), state = State.HEALTHY)
+		val target = CelestialBody("Moon", new Position(1000, 0))
+
+		assertThrows(classOf[NullPointerException], () => observer.setState(null))
+		assertThrows(classOf[NullPointerException], () => observer.canView(null, target))
 	}
 
 }

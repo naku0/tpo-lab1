@@ -12,7 +12,7 @@ class AggregatorTest {
   }
 
   @Test
-  def addStoresHumanAndGetReturnsItForSamePositionInstance(): Unit = {
+  def addStoresHumanAndGetReturnsIt(): Unit = {
     val position = new Position(1, 2)
     val human = new Human("Arthur", 10, position = position, state = State.HEALTHY)
 

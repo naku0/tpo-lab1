@@ -20,16 +20,21 @@ class Human(val name: String,
 
   override def clash(h: Human): Unit = {
     h.getHit
+    getHit
     println(s"$name сталкивается с ${h.name}.")
   }
 
   override def canView(a: Atmosphere, v: Viewable): Boolean = {
-    vision * a.rarefaction() / (position.getDistance(v.pos) / 1000) > 4
+    vision * a.visibilityFactor() / (position.getDistance(v.pos) / 1000) > 4
   }
 
   def move(newPos: Position, a: Atmosphere): Unit = {
     position = state match {
-      case HEALTHY =>{
+      // в красной атмосфере ничего не видно 
+      case _ if a.color() == Atmosphere.RED => {
+        position
+      }
+      case HEALTHY => {
         moves += 1
         newPos
       }
@@ -47,12 +52,12 @@ class Human(val name: String,
     @tailrec
     def func():Unit = {
       Aggregator.get(position) match {
-        case Some(h) => {
+        case Some(h) if h != this => {
           clash(h)
           position.x = position.x - 1
           func()
         }
-        case None => ()
+        case _ => ()
       }
     }
     
